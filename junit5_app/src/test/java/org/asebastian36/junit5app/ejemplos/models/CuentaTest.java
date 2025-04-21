@@ -1,18 +1,45 @@
 package org.asebastian36.junit5app.ejemplos.models;
 
 import org.asebastian36.junit5app.ejemplos.exceptions.DineroInsuficienteException;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.condition.*;
+
 import java.math.BigDecimal;
+import java.util.Map;
+import java.util.Properties;
+
 import static org.junit.jupiter.api.Assertions.*;
 
+//  @TestInstance(TestInstance.LifeCycle.PER_CLASS)
 class CuentaTest {
+
+    Cuenta cuenta;
+
+    @BeforeAll
+    static void beforeAll() {
+        System.out.println("Inicializando el test");
+    }
+
+    @BeforeEach
+    void beforeEach() {
+        //  usaran esta instancia en cada prueba
+        this.cuenta = new Cuenta("Angel", new BigDecimal("10000.12345"));
+        System.out.println("Iniciando Metodo.");
+    }
+
+    @AfterEach
+    void afterEach() {
+        System.out.println("Finalizando el metodo de prueba.");
+    }
+
+    @AfterAll
+    static void afterAll() {
+        System.out.println("Finalizando el test");
+    }
 
     @Test
     @DisplayName("Probando el nombre de la cuenta corriente")
     void testNombreCuenta() {
-        Cuenta cuenta = new Cuenta("Angel", new BigDecimal("10000.12345"));
-
         //  cuenta.setPersona("Angel");
 
         String esperado = "Angel";//    valor que queremos
@@ -29,7 +56,6 @@ class CuentaTest {
     @Test
     @DisplayName("Probando la funcionalidad de obtener el saldo, cumpliendo las reglas basicas del negocio")
     void testSaldoCuenta() {
-        Cuenta cuenta = new Cuenta("Angel", new BigDecimal("10000.12345"));
 
         assertNotNull(cuenta.getSaldo());
         assertEquals(10000.12345, cuenta.getSaldo().doubleValue());
@@ -43,7 +69,6 @@ class CuentaTest {
     @DisplayName("Probando la funcionalidad de evaluar atributo a atributo al comparar dos cuentas")
     void testRefenciaCuenta() {
         //  que ambas instancias sean distintas
-        Cuenta cuenta = new Cuenta("Angel", new BigDecimal("10000.12345"));
         Cuenta cuenta1 = new Cuenta("Angel", new BigDecimal("10000.12345"));
 
         //  assertNotEquals(cuenta, cuenta1);
@@ -55,7 +80,6 @@ class CuentaTest {
     @Test
     @DisplayName("Probando la funcion de resta de saldo o debito en las cuentas")
     void testDebitoCuenta() {
-        Cuenta cuenta = new Cuenta("Angel", new BigDecimal("10000.12345"));
         cuenta.debito(new BigDecimal(1500));
 
         assertNotNull(cuenta.getSaldo());
@@ -66,7 +90,6 @@ class CuentaTest {
     @Test
     @DisplayName("Probando la funcion de deposito o credito en las cuentas")
     void testCreditoCuenta() {
-        Cuenta cuenta = new Cuenta("Angel", new BigDecimal("10000.12345"));
         cuenta.credito(new BigDecimal(1500));
 
         assertNotNull(cuenta.getSaldo());
@@ -77,8 +100,6 @@ class CuentaTest {
     @Test
     @DisplayName("Probando si se lanza el error al llegar a numeros menores a cero en las cuentas")
     void testDineroInsuficienteExceptionCuenta() {
-        Cuenta cuenta = new Cuenta("Angel", new BigDecimal("10000.12345"));
-
         Exception exception = assertThrows(DineroInsuficienteException.class, () -> {
             cuenta.debito(new BigDecimal(10001.12345));
         });
@@ -92,7 +113,7 @@ class CuentaTest {
     @Test
     @DisplayName("Probando la funcion de credito o deposito entre cuentas, verificando las cifras tanto de resta a una cuenta, como de abono a la otra cuenta")
     void testTransferirDineroCuentas() {
-        Cuenta cuentaOrigen = new Cuenta("Angel", new BigDecimal("10000.12345"));
+        Cuenta cuentaOrigen = cuenta;
         Cuenta cuentaDestino = new Cuenta("Paco", new BigDecimal("10000.12345"));
 
         Banco banco = new Banco("BBVA");
@@ -107,7 +128,7 @@ class CuentaTest {
     @DisplayName("Probando la condicion de que ambas cuentas pertenezcan al mismo banco para poder hacer operaciones entre ellas, ademas revisamos que ambos usuarios esten entre los usuarios esten en la lista de clientes del banco")
     void testRelacionBancoCuentas() {
         //  fail();
-        Cuenta cuentaOrigen = new Cuenta("Angel", new BigDecimal("10000.12345"));
+        Cuenta cuentaOrigen = cuenta;
         Cuenta cuentaDestino = new Cuenta("Paco", new BigDecimal("10000.12345"));
 
         Banco banco = new Banco("BBVA");
@@ -144,5 +165,87 @@ class CuentaTest {
                             .anyMatch(c -> c.getPersona().equals("Paco")));
                 }
         );
+    }
+
+    @Test
+    @EnabledOnOs(OS.WINDOWS)
+    void testSoloWindows() {
+    }
+
+    @Test
+    @EnabledOnOs({ OS.MAC, OS.LINUX })
+    void testSoloLinuxMac() {
+    }
+
+    @Test
+    @EnabledOnJre({ JRE.JAVA_11, JRE.JAVA_8 })
+    void soloJdksLts() {
+    }
+
+    @Test
+    @DisabledOnJre({ JRE.JAVA_12, JRE.JAVA_13, JRE.JAVA_14, JRE.JAVA_15 })
+    void noNewJdk() {
+    }
+
+    @Test
+    @EnabledIfSystemProperty(named = "user.name", matches = ".*asebastian36.*")
+    void testUsername() {
+        System.out.println("Bienvenido: " + System.getProperty("user.name"));
+    }
+
+    @Test
+    @EnabledIfEnvironmentVariable(named = "java.version", matches = ".*17.*")
+    void javaVersion() {
+        System.out.println("Java version: " + System.getProperty("java.version"));
+    }
+
+    @Test
+    @EnabledIfSystemProperty(named = "os.arch", matches = ".*64.*")
+    void solo64() {
+        System.out.println("Tienes un sistema operativo 64 bits");
+    }
+
+    @Test
+    @EnabledIfSystemProperty(named = "os.arch", matches = ".*32.*")
+    void solo32() {
+        System.out.println("Tienes un sistema operativo 32 bits");
+    }
+
+    @Test
+    void getSystemProperties() {
+        System.out.println( "Propiedades del sistema: ");
+        Properties properties = System.getProperties();
+        properties.forEach((k, v) -> System.out.println(k + " : " + v));
+        System.out.println();
+    }
+
+    @Test
+    @EnabledIfSystemProperty(named = "ENV", matches = "dev")
+    void testPropiedadPersonalizada() {
+    }
+
+    @Test
+    void getVariablesAmbiente() {
+        System.out.println( "Variables de ambiente: ");
+        Map<String, String> variables = System.getenv();
+        variables.forEach((k, v) -> System.out.println(k + " : " + v));
+        System.out.println();
+    }
+
+    @Test
+    @EnabledIfEnvironmentVariable(named = "JAVA_HOME", matches = ".*idea.*")
+    void testJavaEnv() {
+        System.out.println("JAVA_HOME: " + System.getenv("JAVA_HOME"));
+    }
+
+    @Test
+    @EnabledIfEnvironmentVariable(named = "NUMBER_OF_PROCESSORS", matches = ".*8.*")
+    void testProcesadores() {
+        System.out.println("Numero de procesadores: " + Runtime.getRuntime().availableProcessors());
+    }
+
+    @Test
+    @EnabledIfEnvironmentVariable(named = "ENVIROMENT", matches = ".*dev.*")
+    void testEnv() {
     }
 }
