@@ -22,6 +22,8 @@ JUnit es un framework de pruebas unitarias ampliamente utilizado en Java. Su pro
 | `assertEquals`    | Verifica que dos valores sean iguales.                                     |
 | `assertAll`       | Agrupa múltiples aserciones para que se ejecuten todas, incluso si fallan. |
 | `@Disabled`       | Desactiva una prueba o conjunto de pruebas temporalment.                   |
+| `@Nested`                |
+| `@RepeatedTest`          |
 
 ---
 
@@ -168,3 +170,5 @@ se agrego la propiedad `ENV` con el valor `dev`.
 > Seguna manera
 
 [agregando propiedad a la configuracion 1](./images/configurar-propiedad-1.png)
+
+## Explicacion de `Assumptions`
