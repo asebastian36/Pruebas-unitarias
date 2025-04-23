@@ -12,18 +12,20 @@ JUnit es un framework de pruebas unitarias ampliamente utilizado en Java. Su pro
 
 ## Anotaciones y metodos nuevos
 
-| Método/Annotación | Descripción                                                                |
-|-------------------|----------------------------------------------------------------------------|
-| `@Test`           | Marca un método como una prueba unitaria.                                  |
-| `@DisplayName`    | Proporciona un nombre descriptivo para la prueba.                          |
-| `assertNotNull`   | Verifica que un objeto no sea `null`.                                      |
-| `assertFalse`     | Verifica que una condición sea falsa.                                      |
-| `assertTrue`      | Verifica que una condición sea verdadera.                                  |
-| `assertEquals`    | Verifica que dos valores sean iguales.                                     |
-| `assertAll`       | Agrupa múltiples aserciones para que se ejecuten todas, incluso si fallan. |
-| `@Disabled`       | Desactiva una prueba o conjunto de pruebas temporalment.                   |
-| `@Nested`                |
-| `@RepeatedTest`          |
+| Método/Annotación    | Descripción                                                                |
+|----------------------|----------------------------------------------------------------------------|
+| `@Test`              | Marca un método como una prueba unitaria.                                  |
+| `@DisplayName`       | Proporciona un nombre descriptivo para la prueba.                          |
+| `assertNotNull`      | Verifica que un objeto no sea `null`.                                      |
+| `assertFalse`        | Verifica que una condición sea falsa.                                      |
+| `assertTrue`         | Verifica que una condición sea verdadera.                                  |
+| `assertEquals`       | Verifica que dos valores sean iguales.                                     |
+| `assertAll`          | Agrupa múltiples aserciones para que se ejecuten todas, incluso si fallan. |
+| `@Disabled`          | Desactiva una prueba o conjunto de pruebas temporalment.                   |
+| `@Nested`            |
+| `@RepeatedTest`      |
+| `@ParameterizedTest` |
+| `@Source`            |
 
 ---
 

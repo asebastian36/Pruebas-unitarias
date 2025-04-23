@@ -3,6 +3,9 @@ package org.asebastian36.junit5app.ejemplos.models;
 import org.asebastian36.junit5app.ejemplos.exceptions.DineroInsuficienteException;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -309,6 +312,24 @@ class CuentaTest {
         @EnabledIfEnvironmentVariable(named = "ENVIROMENT", matches = ".*dev.*")
         void testEnv() {
 
+        }
+
+        @DisplayName("Probando la repeticion de un metodo")
+        @RepeatedTest(value = 5, name = "Repeticion numero {currentRepetition} de {totalRepetitions}")
+        void testBucle(RepetitionInfo info) {
+            System.out.println("Repetition info: " + info);
+        }
+
+        @ParameterizedTest(name = "No = {index} | Valor = {0}")
+        @ValueSource(strings = {"100", "200", "300", "500", "1000.12345"})
+        //  @Source
+        @DisplayName("Prueba parametrizada, para operacion debito")
+        void testParametrizado(String monto) {
+            cuenta.debito(new BigDecimal(monto));
+
+            assertNotNull(cuenta.getSaldo());
+
+            assertTrue(cuenta.getSaldo().compareTo(BigDecimal.ZERO) > 0);
         }
     }
 }
