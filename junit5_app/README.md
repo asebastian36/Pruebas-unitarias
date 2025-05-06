@@ -29,6 +29,7 @@ JUnit es un framework de pruebas unitarias ampliamente utilizado en Java. Su pro
 | `@MethodSource`      |
 | `@CsvFileSource`     |
 | `@CsvSource`         |
+| `@Tag`               |
 
 ---
 
@@ -177,3 +178,13 @@ se agrego la propiedad `ENV` con el valor `dev`.
 [agregando propiedad a la configuracion 1](./images/configurar-propiedad-1.png)
 
 ## Explicacion de `Assumptions`
+
+## Ejecutar pruebas por tags
+
+Desde la configuracion de ejecucion:
+
+[ejecutar prueba por tag](./images/ejecutar-por-tag.png)
+
+Despues se especifica a mano los tags a ejecutar.
+
+## TestInfo y TestReporter

@@ -17,16 +17,24 @@ class CuentaTest {
 
     Cuenta cuenta;
 
+    private TestInfo testInfo;
+    private TestReporter testReporter;
+
     @BeforeAll
     static void beforeAll() {
         System.out.println("Inicializando el test");
     }
 
     @BeforeEach
-    void beforeEach() {
+    void beforeEach(TestInfo testInfo, TestReporter testReporter) {
         //  usaran esta instancia en cada prueba
         this.cuenta = new Cuenta("Angel", new BigDecimal("10000.12345"));
-        System.out.println("Iniciando Metodo.");
+
+        this.testInfo = testInfo;
+        this.testReporter = testReporter;
+
+        testReporter.publishEntry("Iniciando Metodo.");
+        testReporter.publishEntry("Ejecutando: " + testInfo.getDisplayName() + " " + testInfo.getTestMethod().orElse(null).getName() + " con las etiquetas " + testInfo.getTags());
     }
 
     @AfterEach
@@ -39,12 +47,14 @@ class CuentaTest {
         System.out.println("Finalizando el test");
     }
 
+    @Tag("cuenta")
     @Nested
     @DisplayName("Probando las propiedades de las cuentas")
     class NombreYSaldoTest {
         @Test
         @DisplayName("Probando el nombre de la cuenta corriente")
         void testNombreCuenta() {
+
             //  cuenta.setPersona("Angel");
 
             String esperado = "Angel";//    valor que queremos
@@ -86,6 +96,8 @@ class CuentaTest {
     @Nested
     @DisplayName("Probando las operaciones de las cuentas")
     class OperacionesTest {
+
+        @Tag("cuenta")
         @Test
         @DisplayName("Probando la funcion de resta de saldo o debito en las cuentas")
         void testDebitoCuenta() {
@@ -96,6 +108,7 @@ class CuentaTest {
             assertEquals("8500.12345", cuenta.getSaldo().toPlainString());
         }
 
+        @Tag("cuenta")
         @Test
         @DisplayName("Probando la funcion de deposito o credito en las cuentas")
         void testCreditoCuenta() {
@@ -107,8 +120,8 @@ class CuentaTest {
         }
     }
 
-
-
+    @Tag("error")
+    @Tag("cuenta")
     @Test
     @DisplayName("Probando si se lanza el error al llegar a numeros menores a cero en las cuentas")
     void testDineroInsuficienteExceptionCuenta() {
@@ -122,6 +135,8 @@ class CuentaTest {
         assertEquals(esperado, actual);
     }
 
+    @Tag("cuenta")
+    @Tag("banco")
     @Test
     @DisplayName("Probando la funcion de credito o deposito entre cuentas, verificando las cifras tanto de resta a una cuenta, como de abono a la otra cuenta")
     void testTransferirDineroCuentas() {
@@ -135,6 +150,8 @@ class CuentaTest {
         assertEquals("11000.12345", cuentaDestino.getSaldo().toPlainString());
     }
 
+    @Tag("banco")
+    @Tag("cuenta")
     @Test
     //  @Disabled
     @DisplayName("Probando la condicion de que ambas cuentas pertenezcan al mismo banco para poder hacer operaciones entre ellas, ademas revisamos que ambos usuarios esten entre los usuarios esten en la lista de clientes del banco")
@@ -322,6 +339,7 @@ class CuentaTest {
         System.out.println("Repetition info: " + info);
     }
 
+    @Tag("param")
     @Nested
     class PruebasParametrizadasTest {
         @ParameterizedTest(name = "No = {index} | Valor = {0}")
