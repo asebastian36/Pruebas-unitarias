@@ -26,6 +26,9 @@ JUnit es un framework de pruebas unitarias ampliamente utilizado en Java. Su pro
 | `@RepeatedTest`      |
 | `@ParameterizedTest` |
 | `@Source`            |
+| `@MethodSource`      |
+| `@CsvFileSource`     |
+| `@CsvSource`         |
 
 ---
 

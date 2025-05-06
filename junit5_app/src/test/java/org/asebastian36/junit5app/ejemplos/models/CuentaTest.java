@@ -4,7 +4,7 @@ import org.asebastian36.junit5app.ejemplos.exceptions.DineroInsuficienteExceptio
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.*;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.*;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -288,6 +288,7 @@ class CuentaTest {
     @Nested
     @DisplayName("Probando las variables de ambiente")
     class VariableAmbienteTest {
+
         @Test
         void getVariablesAmbiente() {
             System.out.println( "Variables de ambiente: ");
@@ -313,18 +314,96 @@ class CuentaTest {
         void testEnv() {
 
         }
+    }
 
-        @DisplayName("Probando la repeticion de un metodo")
-        @RepeatedTest(value = 5, name = "Repeticion numero {currentRepetition} de {totalRepetitions}")
-        void testBucle(RepetitionInfo info) {
-            System.out.println("Repetition info: " + info);
-        }
+    @DisplayName("Probando la repeticion de un metodo")
+    @RepeatedTest(value = 5, name = "Repeticion numero {currentRepetition} de {totalRepetitions}")
+    void testBucle(RepetitionInfo info) {
+        System.out.println("Repetition info: " + info);
+    }
 
+    @Nested
+    class PruebasParametrizadasTest {
         @ParameterizedTest(name = "No = {index} | Valor = {0}")
         @ValueSource(strings = {"100", "200", "300", "500", "1000.12345"})
         //  @Source
         @DisplayName("Prueba parametrizada, para operacion debito")
         void testParametrizado(String monto) {
+            cuenta.debito(new BigDecimal(monto));
+
+            assertNotNull(cuenta.getSaldo());
+
+            assertTrue(cuenta.getSaldo().compareTo(BigDecimal.ZERO) > 0);
+        }
+
+        @ParameterizedTest(name = "No = {index} | Valor = {0} - {argumentsWithNames}")
+        @CsvSource( { "1,100", "2,200", "3,300", "4,500", "5,700", "6,1000.12345" } )
+        @DisplayName("Prueba parametrizada con csv, para operacion debito")
+        void testParametrizadoCsv(String index, String monto) {
+
+            System.out.println(index + " -> " + monto);
+            cuenta.debito(new BigDecimal(monto));
+
+            assertNotNull(cuenta.getSaldo());
+
+            assertTrue(cuenta.getSaldo().compareTo(BigDecimal.ZERO) > 0);
+        }
+
+        @ParameterizedTest(name = "No = {index} | Valor = {0} - {argumentsWithNames}")
+        @CsvSource( { "120,100,Angel,Sebastian", "260,200,Diego,Isaac", "318,300,Maria,Elisa", "4870,500,Alma,Delia", "5999,700,Lucio,Ivan", "6999,1000.12345,Johny,Ruben" } )
+        @DisplayName("Prueba parametrizada con csv2, para operacion debito")
+        void testParametrizadoCsv2(String saldo, String monto, String esperado, String actual) {
+
+            System.out.println(saldo + " -> " + monto);
+            cuenta.setSaldo(new BigDecimal(saldo));
+
+            cuenta.debito(new BigDecimal(monto));
+
+            assertNotNull(cuenta.getSaldo());
+            assertNotNull(cuenta.getPersona());
+
+            assertEquals(esperado, actual);
+
+            assertTrue(cuenta.getSaldo().compareTo(BigDecimal.ZERO) > 0);
+        }
+
+        @ParameterizedTest(name = "No = {index} | Valor = {0} - {argumentsWithNames}")
+        @CsvFileSource(resources = "/data.csv")
+        @DisplayName("Prueba parametrizada con csv file resource, para operacion debito")
+        void testParametrizadoCsvFileSource(String monto) {
+            cuenta.debito(new BigDecimal(monto));
+
+            assertNotNull(cuenta.getSaldo());
+
+            assertTrue(cuenta.getSaldo().compareTo(BigDecimal.ZERO) > 0);
+        }
+
+        @ParameterizedTest(name = "No = {index} | Valor = {0} - {argumentsWithNames}")
+        @CsvFileSource(resources = "/data2.csv")
+        @DisplayName("Prueba parametrizada con csv file resource 2, para operacion debito")
+        void testParametrizadoCsvFileSource2(String saldo, String monto, String esperado, String actual) {
+            System.out.println(saldo + " -> " + monto);
+            cuenta.setSaldo(new BigDecimal(saldo));
+            cuenta.debito(new BigDecimal(monto));
+
+            cuenta.setPersona(actual);
+
+            assertNotNull(cuenta.getSaldo());
+            assertNotNull(cuenta.getPersona());
+
+            assertEquals(esperado, actual);
+
+            assertTrue(cuenta.getSaldo().compareTo(BigDecimal.ZERO) > 0);
+        }
+
+        static List<String> montoList() {
+            return Arrays.asList("100", "200", "300", "500", "1000.12345");
+        }
+
+        @ParameterizedTest(name = "No = {index} | Valor = {0} - {argumentsWithNames}")
+        @MethodSource("montoList")
+        @DisplayName("Prueba parametrizada con method source, para operacion debito")
+        void testParametrizadoMethodSource(String monto) {
             cuenta.debito(new BigDecimal(monto));
 
             assertNotNull(cuenta.getSaldo());
